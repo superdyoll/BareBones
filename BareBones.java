@@ -19,56 +19,71 @@ public class BareBones {
     //It is set up as such <Loop , Pointer>
     protected HashMap<Integer, Integer> loopTracker = new HashMap<>();
 
-    public HashMap<String, Integer> readCode(String[] codeArray, HashMap<String, Integer> variableArray, int pointer, int line, int currentLoop) throws LanguageException {
+    //Class HashMap. The class needs so many variables to allow for the recursion
+    public HashMap<String, Integer> readCode(String[] codeArray, HashMap<String, Integer> variableHash, int pointer, int line, int currentLoop) throws LanguageException {
+        //Used to allow the end statement to work
         boolean leaveLoop = false;
+        //Go through the whole array reading every command unless we are told to leave the loop because of recursion
         while (pointer < codeArray.length - 1 && !leaveLoop) {
+            //As all commands start off with the command first this works
             switch (codeArray[pointer]) {
                 case "clear": {
+                    //Common bits to clear, incr, decr and while
+                    //Increasing the pointer moves the pointer to the variable name
                     pointer++;
+                    //Get the name of the variable used in the command
                     String nextVariable = codeArray[pointer];
-                    variableArray.put(nextVariable, 0);
+                    //Update or put the variable into the VariableHash and set it to 0
+                    variableHash.put(nextVariable, 0);
+                    //Increase the pointer and check the command ends in a semi-colon
                     pointer++;
                     if (!codeArray[pointer].equals(";")) {
-                        throw new LanguageException("ERROR: All commands must be followed by a semi colon");
+                        throw new LanguageException("ERROR: All commands must be followed by a semi colon Line: " + line);
                     }
                     break;
                 }
                 case "incr": {
+                    //Common bits to clear, incr, decr and while
+                    //Increasing the pointer moves the pointer to the variable name
                     pointer++;
+                    //Get the name of the variable used in the command
                     String nextVariable = codeArray[pointer];
-                    Integer currentValue = variableArray.get(nextVariable);
+                    //Get the current value of the variable
+                    Integer currentValue = variableHash.get(nextVariable);
+                    //If the variable doesn't exist then set it to 1
                     if (currentValue == null) {
-                        variableArray.put(nextVariable, 1);
+                        variableHash.put(nextVariable, 1);
+                    //Else increase the current value by one and replace it
                     } else {
                         Integer newValue = currentValue + 1;
-                        variableArray.put(nextVariable, newValue);
+                        variableHash.put(nextVariable, newValue);
                     }
                     pointer++;
                     if (!codeArray[pointer].equals(";")) {
-                        throw new LanguageException("ERROR: All commands must be followed by a semi colon");
+                        throw new LanguageException("ERROR: All commands must be followed by a semi colon Line: " + line);
                     }
                     break;
                 }
                 case "decr": {
                     pointer++;
                     String nextVariable = codeArray[pointer];
-                    Integer currentValue = variableArray.get(nextVariable);
+                    Integer currentValue = variableHash.get(nextVariable);
                     if (currentValue == null) {
-                        variableArray.put(nextVariable, -1);
+                        variableHash.put(nextVariable, -1);
                     } else {
                         Integer newValue = currentValue - 1;
-                        variableArray.put(nextVariable, newValue);
+                        variableHash.put(nextVariable, newValue);
                     }
                     pointer++;
                     if (!codeArray[pointer].equals(";")) {
-                        throw new LanguageException("ERROR: All commands must be followed by a semi colon");
+                        throw new LanguageException("ERROR: All commands must be followed by a semi colon Line: " + line);
                     }
                     break;
                 }
                 case "while": {
                     pointer++;
                     String nextVariable = codeArray[pointer];
-                    Integer currentValue = variableArray.get(nextVariable);
+                    Integer currentValue = variableHash.get(nextVariable);
                     String checkCode = null;
                     for (int i = 0; i <= 3; i++) {
                         pointer++;
@@ -82,8 +97,8 @@ public class BareBones {
                     if (checkCode.equals("not0do;")) {
                         currentLoop++;
                         while (currentValue != 0) {
-                            variableArray = readCode(codeArray, variableArray, pointer, line, currentLoop);
-                            currentValue = variableArray.get(nextVariable);
+                            variableHash = readCode(codeArray, variableHash, pointer, line, currentLoop);
+                            currentValue = variableHash.get(nextVariable);
                         }
                         pointer = loopTracker.get(currentLoop);
                         currentLoop--;
@@ -92,18 +107,14 @@ public class BareBones {
                 }
                 case "end": {
                     if (currentLoop > 0) {
-                        Integer endLoopPointer = loopTracker.get(currentLoop);
-                        //if (endLoopPointer == null) {
-                            pointer++;
-                            if (!codeArray[pointer].equals(";")) {
-                                throw new LanguageException("ERROR: All commands must be followed by a semi colon");
-                            } else {
-                                loopTracker.put(currentLoop, pointer);
-                            }
-                            leaveLoop = true;
-                        //}else{
-                        //    leaveLoop = true;
-                        //}
+                        pointer++;
+                        if (!codeArray[pointer].equals(";")) {
+                            throw new LanguageException("ERROR: All commands must be followed by a semi colon Line: " + line);
+                        } else {
+                            loopTracker.put(currentLoop, pointer);
+                        }
+                        leaveLoop = true;
+
                     } else {
                         throw new LanguageException("ERROR: End loop without while clause on line " + line);
                     }
@@ -118,7 +129,7 @@ public class BareBones {
             pointer++;
             line++;
         }
-        return variableArray;
+        return variableHash;
     }
 
     public String[] getStringArray(String code) {

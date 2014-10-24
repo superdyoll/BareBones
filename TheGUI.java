@@ -3,12 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package barebones;
 
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
@@ -21,14 +25,28 @@ public class TheGUI extends javax.swing.JFrame {
     /**
      * Creates new form TheGUI
      */
+    //DefaultStyledDocument document = new DefaultStyledDocument();
+    
     public TheGUI() {
         initComponents();
+        /* Me trying to set it up so that some words turned blue
+         *StyleContext context = new StyleContext();
+         // build a style
+         *Style style = context.addStyle("test", null);
+         // set some style properties
+         *StyleConstants.setForeground(style, Color.BLUE);
+         *try {
+         // add some data to the document
+         *    document.insertString(0, "", style);
+         *} catch (BadLocationException ex) {
+         *    Logger.getLogger(TheGUI.class.getName()).log(Level.SEVERE, null, ex);
+         *}
+         */
     }
-    
+
     final StyleContext cont = StyleContext.getDefaultStyleContext();
     final AttributeSet attr = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.RED);
     final AttributeSet attrBlack = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.BLACK);
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -51,6 +69,7 @@ public class TheGUI extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Bare Bones Interpreter");
 
         pnlProgram.setBorder(javax.swing.BorderFactory.createTitledBorder("The program"));
 
@@ -142,18 +161,18 @@ public class TheGUI extends javax.swing.JFrame {
 
     private void btnExecuteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExecuteActionPerformed
         String code = txtareaProgram.getText();
-        BareBones myBareBones = new BareBones ();
+        BareBones myBareBones = new BareBones();
         try {
-            String [] codeArray = myBareBones.getStringArray(code);
+            String[] codeArray = myBareBones.getStringArray(code);
             HashMap<String, Integer> variableArray = new HashMap<>();
             int pointer = 0;
             int line = 1;
             int currentLoop = 0;
-            variableArray = myBareBones.readCode(codeArray,variableArray, pointer, line, currentLoop);
+            variableArray = myBareBones.readCode(codeArray, variableArray, pointer, line, currentLoop);
             String output = myBareBones.readHashMap(variableArray);
             txtareaOutput.setForeground(Color.BLACK);
             txtareaOutput.setText(output);
-        }catch (LanguageException e){
+        } catch (LanguageException e) {
             txtareaOutput.setForeground(Color.RED);
             txtareaOutput.setText(e.getMessage());
         }
@@ -161,9 +180,9 @@ public class TheGUI extends javax.swing.JFrame {
 
     private void txtareaProgramKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtareaProgramKeyReleased
         /*String code = txtareaProgram.getText();
-        String [] codeArray = myBareBones.getStringArray(code);
-        for
-                if (text.substring(wordL, wordR).matches("(\\W)*(private|public|protected)"))*/
+         String [] codeArray = myBareBones.getStringArray(code);
+         for
+         if (text.substring(wordL, wordR).matches("(\\W)*(private|public|protected)"))*/
     }//GEN-LAST:event_txtareaProgramKeyReleased
 
     /**
