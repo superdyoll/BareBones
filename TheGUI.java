@@ -179,6 +179,7 @@ public class TheGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnExecuteActionPerformed
 
     private void txtareaProgramKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtareaProgramKeyReleased
+        //More code from when I tried to turn it into a fully featured IDE
         /*String code = txtareaProgram.getText();
          String [] codeArray = myBareBones.getStringArray(code);
          for
